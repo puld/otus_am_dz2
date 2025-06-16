@@ -17,8 +17,8 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Проверяем, что путь начинается с /health
-	if !strings.HasPrefix(r.URL.Path, "/health") {
+	// Проверяем, что путь содержит /health
+	if !strings.Contains(r.URL.Path, "/health") {
 		http.NotFound(w, r)
 		return
 	}
