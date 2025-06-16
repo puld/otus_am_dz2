@@ -17,9 +17,8 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Убираем trailing slash если есть
-	path := strings.TrimSuffix(r.URL.Path, "/")
-	if path != "/health" {
+	// Проверяем, что путь начинается с /health
+	if !strings.HasPrefix(r.URL.Path, "/health") {
 		http.NotFound(w, r)
 		return
 	}
