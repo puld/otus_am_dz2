@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type HealthResponse struct {
@@ -16,6 +17,13 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Убираем trailing slash если есть
+	path := strings.TrimSuffix(r.URL.Path, "/")
+	if path != "/health" {
+		http.NotFound(w, r)
+		return
+	}
+
 	response := HealthResponse{
 		Status: "OK",
 	}
@@ -25,10 +33,11 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/health/", healthHandler)
 
 	log.Printf("Server starting on port 8000...")
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
-} 
+}

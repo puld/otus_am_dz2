@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: otus-dz2
 spec:
-  selector:
-    app: otus-dz2
+  type: LoadBalancer
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
-  type: ClusterIP 
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: otus-dz2 
