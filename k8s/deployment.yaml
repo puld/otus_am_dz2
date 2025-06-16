@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otus-dz2
+  labels:
+    app: otus-dz2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: otus-dz2
+  template:
+    metadata:
+      labels:
+        app: otus-dz2
+    spec:
+      containers:
+      - name: otus-dz2
+        image: mrpuld/otus-dz2:latest
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health/
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 10 
