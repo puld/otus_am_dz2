@@ -1,0 +1,15 @@
+@startuml Отслеживание_заказа
+title Отслеживание заказа
+    actor Покупатель
+    participant API_Gateway #ff9e4f
+    participant Order_Service #4f4fff
+    participant Payment_Service #ff4f4f
+    participant Delivery_Service #4fff9e
+
+    Покупатель ->> API_Gateway: GET /orders/123
+    API_Gateway ->> Order_Service: gRPC GetOrder()
+    Order_Service ->> Payment_Service: gRPC GetPaymentStatus()
+    Order_Service ->> Delivery_Service: gRPC GetDeliveryInfo()
+    Order_Service -->> API_Gateway: Агрегированные данные
+    API_Gateway -->> Покупатель: 200 + статус заказа
+@enduml

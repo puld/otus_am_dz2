@@ -1,0 +1,45 @@
+@startuml Оформление_заказа
+title Оформление заказа
+    actor Покупатель
+    participant API_Gateway #ff9e4f
+    participant Order_Service #4f4fff
+    participant Inventory_Service #9e4fff
+    participant Payment_Service #ff4f4f
+    participant Delivery_Service #4fff9e
+    participant Notification_Service #8aff4f
+    participant Kafka #666666
+    participant MongoDB #13aa52
+
+    ' 1. Покупатель инициирует оформление заказа
+    Покупатель ->> API_Gateway: POST /checkout {address, payment_method}
+    API_Gateway ->> Order_Service++: gRPC CreateOrder()
+
+    ' 2. Резервирование товаров
+    Order_Service ->> Inventory_Service++: gRPC ReserveItems(order_id)
+    Inventory_Service ->> MongoDB: Блокировка остатков
+    Inventory_Service -->> Order_Service--: Результат резерва
+
+    ' 3. Расчет стоимости доставки
+    Order_Service ->> Delivery_Service++: gRPC CalculateDelivery(address)
+    Delivery_Service ->> MongoDB: Получение тарифов
+    Delivery_Service -->> Order_Service--: Стоимость и сроки
+
+    ' 4. Обработка платежа
+    Order_Service ->> Payment_Service++: gRPC ProcessPayment(total_amount)
+    Payment_Service ->> MongoDB: Проверка/фиксация платежа
+    Payment_Service -->> Order_Service--: PaymentStatus
+
+    ' 5. Фиксация заказа
+    Order_Service ->> MongoDB: Сохранить заказ
+    Order_Service ->> Kafka: OrderConfirmed(order_id)
+    Order_Service -->> API_Gateway--: OrderID, статус
+    API_Gateway -->> Покупатель: 201 Created, OrderID
+
+    ' 6. Асинхронные процессы (события и уведомления)
+    Kafka -->> Delivery_Service++: OrderConfirmed(order_id)
+    Delivery_Service ->> MongoDB--: Создать доставку
+    Delivery_Service ->> Kafka: DeliveryPlanned(delivery_id)
+    
+    Kafka -->> Notification_Service++:DeliveryPlanned(delivery_id)
+    Notification_Service ->> Покупатель--: Email/SMS с деталями
+@enduml

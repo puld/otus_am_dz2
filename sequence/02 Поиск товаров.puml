@@ -1,0 +1,24 @@
+@startuml Поиск_товаров
+title Поиск товаров
+    actor Покупатель
+    participant API_Gateway #ff9e4f
+    participant Product_Service #ff4f9e
+    participant Redis #d62e2e
+    participant Inventory_Service #9e4fff
+    participant MongoDB #13aa52
+
+    Покупатель ->> API_Gateway: GET /products?search=iPhone
+    API_Gateway ->> Product_Service++: gRPC GetProducts()
+    Product_Service ->> Redis++: Проверить кеш
+    alt Данные в кеше
+        Product_Service <<-- Redis--: Вернуть кешированные данные
+    else Нет в кеше
+        Product_Service ->> MongoDB++: Поиск товаров
+        Product_Service <<-- MongoDB--: Результаты
+        Product_Service ->> Inventory_Service++: gRPC GetStock()
+        Product_Service <<-- Inventory_Service--: Остатки
+        Product_Service ->> Redis: Кешировать результат
+    end
+    API_Gateway <<-- Product_Service--: Список товаров
+    API_Gateway -->> Покупатель: 200 OK
+@enduml

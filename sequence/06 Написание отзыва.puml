@@ -1,0 +1,18 @@
+@startuml Написание_отзыва
+title Написание отзыва
+    actor Покупатель
+    participant API_Gateway #ff9e4f
+    participant Product_Service #ff4f9e
+    participant Order_Service #4f4fff
+    participant Kafka #666666
+    participant MongoDB #13aa52
+
+    Покупатель ->> API_Gateway: POST /reviews {product_id, rating}
+    API_Gateway ->> Product_Service++: gRPC AddReview()
+    Product_Service ->> Order_Service++: gRPC ValidatePurchase()
+    Product_Service <<-- Order_Service--: Подтверждение
+    Product_Service ->> MongoDB: Сохранить отзыв
+    Product_Service ->> Kafka: ReviewAdded
+    API_Gateway <<-- Product_Service--: Результат
+    API_Gateway -->> Покупатель: 201 Created
+@enduml

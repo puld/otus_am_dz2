@@ -1,0 +1,18 @@
+@startuml Добавление_в_корзину
+title Добавление в корзину
+    actor Покупатель
+    participant API_Gateway #ff9e4f
+    participant Order_Service #4f4fff
+    participant Inventory_Service #9e4fff
+    participant Redis #d62e2e
+    participant MongoDB #13aa52
+
+    Покупатель ->> API_Gateway: POST /cart/add {product_id, qty}
+    API_Gateway ->> Order_Service++: gRPC AddToCart()
+    Order_Service ->> Inventory_Service++: gRPC ReserveItems()
+    Inventory_Service ->> MongoDB: Зарезервировать остаток
+    Order_Service <<-- Inventory_Service--: OK
+    Order_Service ->> Redis: Обновить корзину
+    API_Gateway <<-- Order_Service--: Результат
+    API_Gateway -->> Покупатель: 200 OK
+@enduml
