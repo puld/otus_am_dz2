@@ -1,5 +1,5 @@
 @startuml Добавление_в_корзину
-title Добавление в корзину
+title 3 Добавление в корзину
     actor Покупатель
     participant API_Gateway #ff9e4f
     participant Order_Service #4f4fff

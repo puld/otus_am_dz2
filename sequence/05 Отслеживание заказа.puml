@@ -1,5 +1,5 @@
 @startuml Отслеживание_заказа
-title Отслеживание заказа
+title 5 Отслеживание заказа
     actor Покупатель
     participant API_Gateway #ff9e4f
     participant Order_Service #4f4fff

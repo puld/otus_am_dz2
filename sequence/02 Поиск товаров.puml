@@ -1,5 +1,5 @@
 @startuml Поиск_товаров
-title Поиск товаров
+title 2 Поиск товаров
     actor Покупатель
     participant API_Gateway #ff9e4f
     participant Product_Service #ff4f9e

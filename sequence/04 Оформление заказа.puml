@@ -1,5 +1,5 @@
 @startuml Оформление_заказа
-title Оформление заказа
+title 4 Оформление заказа
     actor Покупатель
     participant API_Gateway #ff9e4f
     participant Order_Service #4f4fff

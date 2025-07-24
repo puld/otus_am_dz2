@@ -1,5 +1,5 @@
 @startuml Регистрация_пользователя
-title Регистрация пользователя
+title 1 Регистрация пользователя
     actor Покупатель
     participant API_Gateway #ff9e4f
     participant Auth_Service #4fafff

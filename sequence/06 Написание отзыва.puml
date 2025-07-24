@@ -1,5 +1,5 @@
 @startuml Написание_отзыва
-title Написание отзыва
+title 6 Написание отзыва
     actor Покупатель
     participant API_Gateway #ff9e4f
     participant Product_Service #ff4f9e
